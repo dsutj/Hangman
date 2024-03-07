@@ -11,7 +11,7 @@ public class Main {
         boolean complete = false;
 
         //For storing which letters the user has inputted already
-        ArrayList<String> letters = new ArrayList<String>();
+        ArrayList<Character> letters = new ArrayList<Character>();
         ArrayList<String> words = getWords();
         String word = randomWord(words);
         assert word != null;
@@ -24,19 +24,28 @@ public class Main {
         System.out.printf("Hello %s, welcome to Hangman!%n", name);
 
         while (! complete) {
-            while (! hidden.equals(word) || lives != 0) {
+            while (! hidden.equals(word) && lives != 0) {
                 String answer = "null";
                 gameBoard(lives, hidden);
-                while (answer.length() != 1) {
-                    try {
-                        answer = input.next();
-                        System.out.println("Please enter a single character.");
-                    } catch (Exception e) {
-                        System.out.println("Invalid input.");
+
+                while (true) {
+                    while (answer.length() != 1) {
+                        try {
+                            answer = input.next();
+                            System.out.println("Please enter a single character.");
+                        } catch (Exception e) {
+                            System.out.println("Invalid input.");
+                        }
+                    }
+                    if (!letters.contains(answer.charAt(0))) {
+                        break;
+                    }   else {
+                        System.out.println("Please input a new letter!");
                     }
                 }
 
                 char guess = answer.charAt(0);
+                letters.add(guess);
                 if (word.indexOf(guess) != -1) {
                     hidden = guess(guess, hidden, word);
                     System.out.println("Correct!");
@@ -47,7 +56,7 @@ public class Main {
             }
 
             if (lives == 0) {
-                System.out.println("Bad luck! Game over!");
+                System.out.println("Bad luck! Game over! The word was " + word);
                 complete = tryAgain();
             }   else {
                 System.out.println("Congratulations! The word was " + word);
